@@ -47,6 +47,9 @@ namespace OpenHTM.IDE
 			this.ActiveControl = this._viewer;
 			this._viewer.Focus();
 			this.MouseWheel += this._viewer.Panel_MouseWheel;
+
+			// start listening to key events from panel
+			StateInformationPanel.StateInformationPanel_KeyDnUp += this.Handler_StateInformationPanel_KeyDnUp;
 		}
 
 		#endregion
@@ -86,6 +89,16 @@ namespace OpenHTM.IDE
 			this.menuViewRegionalRemovedSynapses.Checked = this._viewer.ViewRegionalRemovedSynapses;
 		}
 
+		public void RefreshControlKeyIndicator ( bool shift, bool ctrl, bool alt )
+		{
+			lblKeyIndicator.Text = "";
+			if (shift)
+				lblKeyIndicator.Text += "Sh";
+			if (ctrl)
+				lblKeyIndicator.Text += " Ctrl";
+			if (alt)
+				lblKeyIndicator.Text += " Alt";
+		}
 		#endregion
 
 		#region Events
@@ -257,5 +270,12 @@ namespace OpenHTM.IDE
 		}
 
 		#endregion
+
+		private void Handler_StateInformationPanel_KeyDnUp ( object sender, EventArgs e, bool shift, bool ctrl, bool alt )
+		{
+			RefreshControlKeyIndicator ( shift, ctrl, alt );
+		}
+		
+
 	}
 }

@@ -52,6 +52,7 @@
 			this.menuDefaultView = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuHelpLegend = new System.Windows.Forms.ToolStripMenuItem();
+			this.lblKeyIndicator = new System.Windows.Forms.Label();
 			this._viewer = new OpenHTM.IDE.StateInformationPanel();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -257,6 +258,15 @@
 			this.menuHelpLegend.Text = "Legend";
 			this.menuHelpLegend.Click += new System.EventHandler(this.menuHelpLegend_Click);
 			// 
+			// lblKeyIndicator
+			// 
+			this.lblKeyIndicator.AutoSize = true;
+			this.lblKeyIndicator.Location = new System.Drawing.Point(462, 6);
+			this.lblKeyIndicator.Name = "lblKeyIndicator";
+			this.lblKeyIndicator.Size = new System.Drawing.Size(76, 13);
+			this.lblKeyIndicator.TabIndex = 1;
+			this.lblKeyIndicator.Text = "lblKeyIndicator";
+			// 
 			// _viewer
 			// 
 			this._viewer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -270,6 +280,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(637, 344);
+			this.Controls.Add(this.lblKeyIndicator);
 			this.Controls.Add(this._viewer);
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -312,5 +323,6 @@
 		private System.Windows.Forms.ToolStripMenuItem menuViewSelectAll;
 		private StateInformationPanel stateInformationPanel;
 		private System.Windows.Forms.ToolStripMenuItem menuHelpLegend;
+		public System.Windows.Forms.Label lblKeyIndicator;
 	}
 }

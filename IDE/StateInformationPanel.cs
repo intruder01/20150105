@@ -13,12 +13,18 @@ using Region = OpenHTM.CLA.Region;
 namespace OpenHTM.IDE
 {
 	// notify listeners of selection changes 
-	public delegate void StateInformationPanelSelectionChanged_Event(object sender, EventArgs e, object obj);
+	public delegate void StateInformationPanelObjectClicked_Event ( object sender, EventArgs e, object obj );
+	public delegate void StateInformationPanelObjectSelected_Event(object sender, EventArgs e, object obj);
+	public delegate void StateInformationPanelObjectDeSelected_Event ( object sender, EventArgs e, object obj );
+	public delegate void StateInformationPanelKeyDnUp_Event ( object sender, EventArgs e, bool shift, bool ctrl, bool alt );
 
 	public class StateInformationPanel : Panel
 	{
+		public static event StateInformationPanelObjectClicked_Event StateInformationPanel_ObjectClicked = delegate { };
+		public static event StateInformationPanelObjectSelected_Event StateInformationPanel_ObjectSelected = delegate { };
+		public static event StateInformationPanelObjectDeSelected_Event StateInformationPanel_ObjectDeSelected = delegate { };
+		public static event StateInformationPanelKeyDnUp_Event StateInformationPanel_KeyDnUp = delegate { };
 
-		public static event StateInformationPanelSelectionChanged_Event StateInformationPanel_SelectionChanged = delegate { };
 
 		#region Fields
 
@@ -68,8 +74,9 @@ namespace OpenHTM.IDE
 		#region Keyboard
 
 		// Indicate that 'control' and 'alt' keys are pressed at moment
-		private bool _keyControlIsPressed;
-		private bool _keyAltIsPressed;
+		public bool _keyControlIsPressed;
+		public bool _keyAltIsPressed;
+		public bool _keyShiftIsPressed;
 
 		#endregion
 
@@ -214,9 +221,11 @@ namespace OpenHTM.IDE
 			this.KeyUp += this.Panel_KeyUp;
 			this.KeyDown += this.Panel_KeyDown;
 
-
 			// Create color dictionary
 			this.CreateSegmentColorDictionary();
+
+			// start listening to WatchWindow events
+			WatchWindow.WatchWindowClosed += this.Handler_WatchWindowClosed;
 
 
 		}
@@ -560,8 +569,8 @@ namespace OpenHTM.IDE
 									  columnSizeOnDisplay.Width, columnSizeOnDisplay.Height);
 
 			// Does the mouse hovers over the column? let's check.
-			if (this._keyControlIsPressed)
-			{
+			//if (this._keyControlIsPressed)
+			//{
 				if ((this._relativeMouseLocationInVirtualWorld.X >= columnPointVirtual.X) &&
 					(this._relativeMouseLocationInVirtualWorld.Y >= columnPointVirtual.Y) &&
 					(this._relativeMouseLocationInVirtualWorld.X < (columnPointVirtual.X + columnSizeVirtual.Width)) &&
@@ -574,7 +583,7 @@ namespace OpenHTM.IDE
 											  columnPointOnDisplay.X, columnPointOnDisplay.Y,
 											  columnSizeOnDisplay.Width, columnSizeOnDisplay.Height);
 				}
-			}
+			//}
 		}
 
 		public void ShowColumns_InputMode(Graphics grpOnBitmap, Column column,
@@ -770,14 +779,7 @@ namespace OpenHTM.IDE
 				Color cellColor = Color.Tan;
 
 				Color colorAverage = Color.Black;
-				/*if (cell.IsActive)
-					clrCellColor = Color.Yellow;
-				if ((cell.WasPredicted == true) && (cell.IsActive == false))
-					clrCellColor = Color.Red;
-				if (cell.IsPredicting == true)
-					clrCellColor = Color.Green;
-				if ((cell.WasPredicted == true) && (cell.IsActive == true))
-					clrCellColor = Color.Aqua;*/
+
 				if (cell.ActiveState[Global.T] && this.ViewActiveCells)
 				{
 					if ((colorAverage.R == 0) && (colorAverage.G == 0) && (colorAverage.B == 0))
@@ -884,8 +886,8 @@ namespace OpenHTM.IDE
 									   Color.Black);
 
 				// Does the mouse hover over the cell? let's check.
-				if (this._keyControlIsPressed)
-				{
+				//if (this._keyControlIsPressed)
+				//{
 					if ((this._relativeMouseLocationInVirtualWorld.X >= cellPointVirtual.X) &&
 						(this._relativeMouseLocationInVirtualWorld.Y >= cellPointVirtual.Y) &&
 						(this._relativeMouseLocationInVirtualWorld.X < (cellPointVirtual.X + cellSizeVirtual.Width)) &&
@@ -898,7 +900,7 @@ namespace OpenHTM.IDE
 												  cellPoint.X, cellPoint.Y,
 												  cellSizeOnDisplay.Width, cellSizeOnDisplay.Height);
 					}
-				}
+				//}
 			}
 		}
 
@@ -1292,7 +1294,7 @@ namespace OpenHTM.IDE
 			//test only 
 			if (Properties.Settings.Default.StealthMode)
 				return;
-
+			
 			if (this._region != null)
 			{
 				try
@@ -1329,6 +1331,9 @@ namespace OpenHTM.IDE
 				// ArgumentException is sometimes raised by Graphics.FromImage() or 
 				// graphics.DrawImage() because of control size 0.
 			}
+
+			//parent.RefreshControlKeyIndicator ( this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+		
 		}
 
 		#region Private
@@ -1744,6 +1749,10 @@ namespace OpenHTM.IDE
 			{
 				this._keyControlIsPressed = true;
 			}
+			if (e.Shift)
+			{
+				this._keyShiftIsPressed = true;
+			}
 			if (e.Alt)
 			{
 				// Unfortunely, OnKeyDown is activated so long as the key is down.
@@ -1756,6 +1765,9 @@ namespace OpenHTM.IDE
 				}
 			}
 
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( o, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			
 			//base.OnKeyDown(e);
 
 			if (needToRefreshView)
@@ -1771,6 +1783,10 @@ namespace OpenHTM.IDE
 			if (e.Control)
 			{
 				this._keyControlIsPressed = false;
+			}
+			if (e.Shift)
+			{
+				this._keyShiftIsPressed = false;
 			}
 			if (e.KeyData == (Keys.LButton | Keys.ShiftKey))
 			{
@@ -1825,6 +1841,9 @@ namespace OpenHTM.IDE
 				this.ViewSelect_DeselectedAll();
 			}
 
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( o, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+
 			this.Display();
 		}
 
@@ -1870,6 +1889,9 @@ namespace OpenHTM.IDE
 
 			this._lastMouseLocation = new Point(e.X, e.Y);
 
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+
 			// If there are selected entities, display.
 			if (this._selectedEntities.Count > 0)
 			{
@@ -1891,6 +1913,9 @@ namespace OpenHTM.IDE
 		private void Panel_MouseUp(object sender, MouseEventArgs e)
 		{
 			this._pressingTheMouse = false;
+
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
 		}
 
 		private void Panel_MouseDown(object sender, MouseEventArgs e)
@@ -1900,28 +1925,59 @@ namespace OpenHTM.IDE
 
 			// Do we hover on something and pressing control? if yes, then add it
 			// To the list of entities selected.
-			if ((e.Button == MouseButtons.Left) &&
-				this._keyControlIsPressed) 
+			if (e.Button == MouseButtons.Left)
 			{
 				if (this._mouseHoversEntity != null)
 				{
-					// Only add the object if it doesn't already exists in the selected list.
-					if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
+					// Ctrl+LClick - add item
+					if (!this._keyShiftIsPressed && !this._keyControlIsPressed && !this._keyAltIsPressed)
 					{
-						this._selectedEntities.Add ( this._mouseHoversEntity );
-						//List<Cell> selectedCells = this.ExpandEntityIntoListOfCells ( this._selectedEntities[0] );
-						//if (selectedCells.Count > 0)
-							StateInformationPanel_SelectionChanged ( this, e, _selectedEntities );
+						StateInformationPanel_ObjectClicked ( this, e, this._mouseHoversEntity );
+					}
+					// Ctrl+LClick - add item
+					if (!this._keyShiftIsPressed && this._keyControlIsPressed && !this._keyAltIsPressed) 
+					{
+						// Only add the object if it doesn't already exists in the selected list.
+						if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
+						{
+							this._selectedEntities.Add ( this._mouseHoversEntity );
+							StateInformationPanel_ObjectSelected ( this, e, this._mouseHoversEntity );
+						}
+					}
+					// Shift+Ctrl+LClick - remove item
+					if (this._keyShiftIsPressed && this._keyControlIsPressed && !this._keyAltIsPressed)
+					{
+						// Only remove the object if it exists in the selected list.
+						//if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
+						//{
+							this._selectedEntities.Remove ( this._mouseHoversEntity );
+							StateInformationPanel_ObjectDeSelected ( this, e, this._mouseHoversEntity );
+						//}
 					}
 				}
 			}
 
-			// If wer'e pressing right click, clear all selected entities.
+			// Alt+RClick - clear all selected entities.
 			if (e.Button == MouseButtons.Right)
 			{
-				this._selectedEntities.Clear ();
-				StateInformationPanel_SelectionChanged ( this, e, _selectedEntities );
+				// Alt+RClick on background - remove all objects
+				if (this._mouseHoversEntity == null)
+				{
+					if (!this._keyShiftIsPressed && !this._keyControlIsPressed && this._keyAltIsPressed)
+					{
+						//close all watch windows first
+						foreach (var obj in this._selectedEntities)
+						{
+							StateInformationPanel_ObjectDeSelected ( this, e, obj );
+							Application.DoEvents ();
+						}
+						this._selectedEntities.Clear ();
+					}
+				}
 			}
+
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
 
 			this.Display ();
 		}
@@ -1966,7 +2022,37 @@ namespace OpenHTM.IDE
 			// Apply the new size.
 			this._sizeOfView = sizeNewViewingSize;
 
+			// notify listeners of key states
+			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+
 			this.Display();
+		}
+
+
+		private void Handler_WatchWindowClosed ( object sender, EventArgs e, object obj )
+		{
+			this._selectedEntities.Remove ( obj );
+
+			//WatchWindow winToRemove = null;
+			//foreach (WatchWindow w in this.watchWindowList)
+			//{
+			//	if (w == obj)
+			//	{
+			//		winToRemove = w;
+			//		break;
+			//	}
+
+			//	//if (w.objectDisplayed == obj)
+			//	//{
+			//	//	winToRemove = w;
+			//	//	break;
+			//	//}
+			//}
+
+			//if (winToRemove != null)
+			//{
+			//	this.watchWindowList.Remove ( winToRemove );
+			//}
 		}
 
 		#endregion

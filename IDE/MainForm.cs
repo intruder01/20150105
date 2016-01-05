@@ -101,10 +101,15 @@ namespace OpenHTM.IDE
 			NetControllerForm.Instance.Show(this.dockPanel);
 			NetControllerForm.Instance.DockState = DockState.Document;
 
-			//Show Watch window
+			// Show WatchForm
 			WatchForm.Instance.InitializeParams ();
 			WatchForm.Instance.Show ( this.dockPanel );
 			WatchForm.Instance.DockState = DockState.Document;
+
+			// start listening to selection events
+			StateInformationPanel.StateInformationPanel_ObjectClicked += WatchForm.Instance.Handler_StateInfoPanelObjectClicked;
+			StateInformationPanel.StateInformationPanel_ObjectSelected += WatchForm.Instance.Handler_StateInfoPanelObjectSelected;
+			StateInformationPanel.StateInformationPanel_ObjectDeSelected += WatchForm.Instance.Handler_StateInfoPanelObjectDeSelected;
 
 
 		}
@@ -396,7 +401,7 @@ namespace OpenHTM.IDE
 					buttonInitHTM_Click ( sender, e );
 					buttonStepHTM_Click ( sender, e );
 
-					StateInformationPanel.StateInformationPanel_SelectionChanged += WatchForm.Instance.Handler_StateInfoPanelSelectionChanged;
+					
 
 				}
 				catch (Exception ex)
@@ -705,8 +710,13 @@ namespace OpenHTM.IDE
 			
 			//NetControllerForm.Instance.TopNode.Region.SaveToFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
 			//					 + "DataFile.xml" );
-			region.SaveToFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
-								 + "DataFile.xml" );
+			//region.SaveToFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
+			//					 + "DataFile.xml" );
+
+			NetControllerForm.TreeNode node = NetControllerForm.Instance.TopNode;
+			Cell obj = region.Columns[0].Cells[0];
+			WatchWindow ww = new WatchWindow (obj, "title");
+			ww.Show ();
 			
 		}
 
@@ -718,8 +728,8 @@ namespace OpenHTM.IDE
 
 			//NetControllerForm.Instance.TopNode.Region.LoadFromFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
 			//					 + "DataFile.xml" );
-			region.LoadFromFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
-								 + "DataFile.xml" );
+			//region.LoadFromFile ( Project.ProjectFolderPath + Path.DirectorySeparatorChar
+			//					 + "DataFile.xml" );
 		}
 
 	

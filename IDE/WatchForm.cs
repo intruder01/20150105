@@ -27,6 +27,8 @@ namespace OpenHTM.IDE
 		// Private singleton instance
 		private static WatchForm _instance;
 
+		private List<WatchWindow> watchWindowList;
+
 
 		#endregion
 
@@ -67,6 +69,10 @@ namespace OpenHTM.IDE
 
 			// Set UI properties
 			this.MdiParent = MainForm.Instance;
+
+			watchWindowList = new List<WatchWindow>();
+
+			WatchWindow.WatchWindowClosed += this.Handler_WatchWindowClosed;
 		}
 
 		#endregion
@@ -115,12 +121,46 @@ namespace OpenHTM.IDE
 		}
 
 
-		public void Handler_StateInfoPanelSelectionChanged ( object sender, EventArgs e, object selectedEntities )
+		public void Handler_StateInfoPanelObjectClicked ( object sender, EventArgs e, object obj )
 		{
-			SetPropertyGridDataSource ( selectedEntities );
+			SetPropertyGridDataSource ( obj );
 		}
-	
-	
+
+		public void Handler_StateInfoPanelObjectSelected ( object sender, EventArgs e, object obj )
+		{
+			// only open new watch window if not already open
+			foreach (WatchWindow w in this.watchWindowList)
+			{
+				if (w.objectDisplayed == obj) return;
+			}
+
+			WatchWindow ww = new WatchWindow ( obj, "" );
+			if (ww != null)
+			{
+				ww.Show ();
+				watchWindowList.Add ( ww );
+			}
+
+		}
+		public void Handler_StateInfoPanelObjectDeSelected ( object sender, EventArgs e, object obj )
+		{
+			WatchWindow winToClose = null;
+			foreach (WatchWindow w in this.watchWindowList)
+			{
+				if (w.objectDisplayed == obj)
+				{
+					winToClose = w;
+					break;
+				}
+			}
+
+			if (winToClose != null)
+			{
+				winToClose.Close ();
+				this.watchWindowList.Remove ( winToClose );
+				Application.DoEvents ();
+			}
+		}
 		#endregion
 
 
@@ -146,7 +186,32 @@ namespace OpenHTM.IDE
 			}
 		}
 
+		//when watch window closed - remove that object from list
+		private void Handler_WatchWindowClosed ( object sender, EventArgs e, object obj )
+		{
+			this.watchWindowList.Remove ( (WatchWindow)sender );
 
+			//WatchWindow winToRemove = null;
+			//foreach (WatchWindow w in this.watchWindowList)
+			//{
+			//	if (w == obj)
+			//	{
+			//		winToRemove = w;
+			//		break;
+			//	}
+
+			//	//if (w.objectDisplayed == obj)
+			//	//{
+			//	//	winToRemove = w;
+			//	//	break;
+			//	//}
+			//}
+
+			//if (winToRemove != null)
+			//{
+			//	this.watchWindowList.Remove ( winToRemove );
+			//}
+		}
 
 	}
 }
