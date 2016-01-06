@@ -52,8 +52,11 @@
 			this.menuDefaultView = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuHelpLegend = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblKeyIndicator = new System.Windows.Forms.Label();
+			this.lblShiftKeyIndicator = new System.Windows.Forms.Label();
 			this._viewer = new OpenHTM.IDE.StateInformationPanel();
+			this.lblCtrlKeyIndicator = new System.Windows.Forms.Label();
+			this.lblAltKeyIndicator = new System.Windows.Forms.Label();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -258,14 +261,14 @@
 			this.menuHelpLegend.Text = "Legend";
 			this.menuHelpLegend.Click += new System.EventHandler(this.menuHelpLegend_Click);
 			// 
-			// lblKeyIndicator
+			// lblShiftKeyIndicator
 			// 
-			this.lblKeyIndicator.AutoSize = true;
-			this.lblKeyIndicator.Location = new System.Drawing.Point(462, 6);
-			this.lblKeyIndicator.Name = "lblKeyIndicator";
-			this.lblKeyIndicator.Size = new System.Drawing.Size(76, 13);
-			this.lblKeyIndicator.TabIndex = 1;
-			this.lblKeyIndicator.Text = "lblKeyIndicator";
+			this.lblShiftKeyIndicator.AutoSize = true;
+			this.lblShiftKeyIndicator.Location = new System.Drawing.Point(462, 6);
+			this.lblShiftKeyIndicator.Name = "lblShiftKeyIndicator";
+			this.lblShiftKeyIndicator.Size = new System.Drawing.Size(20, 13);
+			this.lblShiftKeyIndicator.TabIndex = 1;
+			this.lblShiftKeyIndicator.Text = "Sh";
 			// 
 			// _viewer
 			// 
@@ -275,13 +278,41 @@
 			this._viewer.Size = new System.Drawing.Size(637, 320);
 			this._viewer.TabIndex = 0;
 			// 
+			// lblCtrlKeyIndicator
+			// 
+			this.lblCtrlKeyIndicator.AutoSize = true;
+			this.lblCtrlKeyIndicator.Location = new System.Drawing.Point(479, 6);
+			this.lblCtrlKeyIndicator.Name = "lblCtrlKeyIndicator";
+			this.lblCtrlKeyIndicator.Size = new System.Drawing.Size(22, 13);
+			this.lblCtrlKeyIndicator.TabIndex = 2;
+			this.lblCtrlKeyIndicator.Text = "Ctrl";
+			// 
+			// lblAltKeyIndicator
+			// 
+			this.lblAltKeyIndicator.AutoSize = true;
+			this.lblAltKeyIndicator.Location = new System.Drawing.Point(498, 6);
+			this.lblAltKeyIndicator.Name = "lblAltKeyIndicator";
+			this.lblAltKeyIndicator.Size = new System.Drawing.Size(19, 13);
+			this.lblAltKeyIndicator.TabIndex = 3;
+			this.lblAltKeyIndicator.Text = "Alt";
+			// 
+			// panel1
+			// 
+			this.panel1.Location = new System.Drawing.Point(456, 3);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(71, 21);
+			this.panel1.TabIndex = 0;
+			// 
 			// StateInformationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(637, 344);
-			this.Controls.Add(this.lblKeyIndicator);
+			this.Controls.Add(this.lblAltKeyIndicator);
+			this.Controls.Add(this.lblCtrlKeyIndicator);
+			this.Controls.Add(this.lblShiftKeyIndicator);
 			this.Controls.Add(this._viewer);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -323,6 +354,9 @@
 		private System.Windows.Forms.ToolStripMenuItem menuViewSelectAll;
 		private StateInformationPanel stateInformationPanel;
 		private System.Windows.Forms.ToolStripMenuItem menuHelpLegend;
-		public System.Windows.Forms.Label lblKeyIndicator;
+		public System.Windows.Forms.Label lblShiftKeyIndicator;
+		public System.Windows.Forms.Label lblCtrlKeyIndicator;
+		public System.Windows.Forms.Label lblAltKeyIndicator;
+		private System.Windows.Forms.Panel panel1;
 	}
 }

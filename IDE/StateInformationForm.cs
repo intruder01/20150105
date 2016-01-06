@@ -91,13 +91,9 @@ namespace OpenHTM.IDE
 
 		public void RefreshControlKeyIndicator ( bool shift, bool ctrl, bool alt )
 		{
-			lblKeyIndicator.Text = "";
-			if (shift)
-				lblKeyIndicator.Text += "Sh";
-			if (ctrl)
-				lblKeyIndicator.Text += " Ctrl";
-			if (alt)
-				lblKeyIndicator.Text += " Alt";
+			lblShiftKeyIndicator.Visible = shift;
+			lblCtrlKeyIndicator.Visible = ctrl;
+			lblAltKeyIndicator.Visible = alt;
 		}
 		#endregion
 
@@ -275,6 +271,7 @@ namespace OpenHTM.IDE
 		{
 			RefreshControlKeyIndicator ( shift, ctrl, alt );
 		}
+
 
 	}
 }

@@ -56,8 +56,11 @@ namespace OpenHTM.IDE
 		//notify listeners when user closes WatchWindow
 		private void WatchWindow_FormClosing ( object sender, FormClosingEventArgs e )
 		{
-			if(e.CloseReason == CloseReason.UserClosing)
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
 				WatchWindowClosed ( this, e, objectDisplayed );
+				Application.DoEvents ();
+			}
 		}
 	}
 }

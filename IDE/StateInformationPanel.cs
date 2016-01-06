@@ -1332,7 +1332,7 @@ namespace OpenHTM.IDE
 				// graphics.DrawImage() because of control size 0.
 			}
 
-			//parent.RefreshControlKeyIndicator ( this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			Application.DoEvents ();
 		
 		}
 
@@ -1741,32 +1741,32 @@ namespace OpenHTM.IDE
 			}
 		}
 
-		private void Panel_KeyDown(object o, KeyEventArgs e)
+		private void Panel_KeyDown(object sender, KeyEventArgs e)
 		{
 			bool needToRefreshView = false;
+			bool updateNeeded = false;
 
-			if (e.Control)
+			if (e.KeyCode == (Keys.LButton | Keys.ShiftKey) && !this._keyControlIsPressed)
 			{
 				this._keyControlIsPressed = true;
+				updateNeeded = true;
 			}
-			if (e.Shift)
+			if (e.KeyCode == Keys.ShiftKey && !this._keyShiftIsPressed)
 			{
 				this._keyShiftIsPressed = true;
+				updateNeeded = true;
 			}
-			if (e.Alt)
+			if (e.KeyCode == (Keys.RButton | Keys.ShiftKey) && !this._keyAltIsPressed)
 			{
-				// Unfortunely, OnKeyDown is activated so long as the key is down.
-				// And not once. therefore we need to make sure we refresh the view
-				// Only once.
-				if (this._keyAltIsPressed == false)
-				{
-					this._keyAltIsPressed = true;
-					needToRefreshView = true;
-				}
+				this._keyAltIsPressed = true;
+				updateNeeded = true;
+				needToRefreshView = true;
 			}
 
 			// notify listeners of key states
-			StateInformationPanel_KeyDnUp ( o, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			if (updateNeeded)
+				StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			Application.DoEvents ();
 			
 			//base.OnKeyDown(e);
 
@@ -1778,44 +1778,48 @@ namespace OpenHTM.IDE
 
 
 
-		private void Panel_KeyUp(object o, KeyEventArgs e)
+		private void Panel_KeyUp(object sender, KeyEventArgs e)
 		{
 
-			//if ((e.Modifiers & Keys.Shift) == Keys.Shift)
-			//{
-			//	this._keyShiftIsPressed = false;
-			//}
-			//if ((e.Modifiers & Keys.Control) == Keys.Control)
+			bool updateNeeded = false;
+
+			if (e.KeyCode == (Keys.LButton | Keys.ShiftKey) && this._keyControlIsPressed)
+			{
+				this._keyControlIsPressed = false;
+				updateNeeded = true;
+			}
+			if (e.KeyCode == Keys.ShiftKey && this._keyShiftIsPressed)
+			{
+				this._keyShiftIsPressed = false;
+				updateNeeded = true;
+			}
+			if (e.KeyCode == (Keys.RButton | Keys.ShiftKey) && this._keyAltIsPressed)
+			{
+				this._keyAltIsPressed = false;
+				updateNeeded = true;
+			}
+						
+			
+			//if (e.KeyData == Keys.ControlKey)
 			//{
 			//	this._keyControlIsPressed = false;
 			//}
-			//if ((e.Modifiers & Keys.Alt) == Keys.Alt)
+			//if (e.KeyData == Keys.ShiftKey)
+			//{
+			//	this._keyShiftIsPressed = false;
+			//}
+			//if (e.KeyData == (Keys.LButton | Keys.ShiftKey))
+			//{
+			//	this._keyControlIsPressed = false;
+			//}
+			//if (e.KeyData == Keys.Alt)
 			//{
 			//	this._keyAltIsPressed = false;
 			//}
-			
-			
-			
-			if (e.KeyData == Keys.ControlKey)
-			{
-				this._keyControlIsPressed = false;
-			}
-			if (e.KeyData == Keys.ShiftKey)
-			{
-				this._keyShiftIsPressed = false;
-			}
-			if (e.KeyData == (Keys.LButton | Keys.ShiftKey))
-			{
-				this._keyControlIsPressed = false;
-			}
-			if (e.KeyData == Keys.Alt)
-			{
-				this._keyAltIsPressed = false;
-			}
-			if (e.KeyData == (Keys.RButton | Keys.ShiftKey))
-			{
-				this._keyAltIsPressed = false;
-			}
+			//if (e.KeyData == (Keys.RButton | Keys.ShiftKey))
+			//{
+			//	this._keyAltIsPressed = false;
+			//}
 			if ((e.KeyData == Keys.D1) || (e.KeyData == Keys.NumPad1))
 			{
 				this.ViewSelect_ActiveCells();
@@ -1858,42 +1862,12 @@ namespace OpenHTM.IDE
 			}
 
 			// notify listeners of key states
-			StateInformationPanel_KeyDnUp ( o, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			if (updateNeeded)
+				StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
 
 			this.Display();
 		}
-
-		protected override bool ProcessCmdKey ( ref Message msg, Keys keyData )
-		{
 			
-			//capture up arrow key
-			if (keyData == Keys.Up)
-			{
-				MessageBox.Show ( "You pressed Up arrow key" );
-				return true;
-			}
-			//capture down arrow key
-			if (keyData == Keys.Down)
-			{
-				MessageBox.Show ( "You pressed Down arrow key" );
-				return true;
-			}
-			//capture left arrow key
-			if (keyData == Keys.Left)
-			{
-				MessageBox.Show ( "You pressed Left arrow key" );
-				return true;
-			}
-			//capture right arrow key
-			if (keyData == Keys.Right)
-			{
-				MessageBox.Show ( "You pressed Right arrow key" );
-				return true;
-			}
-			return base.ProcessCmdKey ( ref msg, keyData );
-		}
-
-
 		private void Panel_MouseMove(object sender, MouseEventArgs e)
 		{
 			bool needToDisplay = false;
@@ -1976,7 +1950,7 @@ namespace OpenHTM.IDE
 			{
 				if (this._mouseHoversEntity != null)
 				{
-					// Ctrl+LClick - add item
+					// LClick - display item in WatchForm (Tab)
 					if (!this._keyShiftIsPressed && !this._keyControlIsPressed && !this._keyAltIsPressed)
 					{
 						StateInformationPanel_ObjectClicked ( this, e, this._mouseHoversEntity );
@@ -1994,12 +1968,8 @@ namespace OpenHTM.IDE
 					// Shift+Ctrl+LClick - remove item
 					if (this._keyShiftIsPressed && this._keyControlIsPressed && !this._keyAltIsPressed)
 					{
-						// Only remove the object if it exists in the selected list.
-						//if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
-						//{
 							this._selectedEntities.Remove ( this._mouseHoversEntity );
 							StateInformationPanel_ObjectDeSelected ( this, e, this._mouseHoversEntity );
-						//}
 					}
 				}
 			}
@@ -2016,7 +1986,6 @@ namespace OpenHTM.IDE
 						foreach (var obj in this._selectedEntities)
 						{
 							StateInformationPanel_ObjectDeSelected ( this, e, obj );
-							Application.DoEvents ();
 						}
 						this._selectedEntities.Clear ();
 					}
@@ -2074,32 +2043,16 @@ namespace OpenHTM.IDE
 
 			this.Display();
 		}
-
-
+		/// <summary>
+		/// Event Handler. handles user closing one of the watchWindows.
+		/// Removes object from list _selectedEntities.
+		/// </summary>
+		/// <param name="sender">WatchWindow being closed.</param>
+		/// <param name="e"></param>
+		/// <param name="obj">Object to remove.</param>
 		private void Handler_WatchWindowClosed ( object sender, EventArgs e, object obj )
 		{
 			this._selectedEntities.Remove ( obj );
-
-			//WatchWindow winToRemove = null;
-			//foreach (WatchWindow w in this.watchWindowList)
-			//{
-			//	if (w == obj)
-			//	{
-			//		winToRemove = w;
-			//		break;
-			//	}
-
-			//	//if (w.objectDisplayed == obj)
-			//	//{
-			//	//	winToRemove = w;
-			//	//	break;
-			//	//}
-			//}
-
-			//if (winToRemove != null)
-			//{
-			//	this.watchWindowList.Remove ( winToRemove );
-			//}
 		}
 
 		#endregion

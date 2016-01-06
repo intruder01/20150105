@@ -88,14 +88,14 @@ namespace OpenHTM.IDE
 		#region Custom Events
 
 
-		//wait for Engine created
+		// event hendler - wait for Engine created
 		public void Handler_SimEngineStarted ( object sender, EventArgs e )
 		{
 			Simulation3DEngine engine = (Simulation3DEngine)sender;
 			//subscribe to Engine SelectionChanged event 
 			engine.SelectionChangedEvent += Handler_SimSelectionChanged;
 		}
-		//wait for Engine shutdown
+		// event handler - wait for Engine shutdown
 		public void Handler_SimEngineShutdown ( object sender, EventArgs e )
 		{
 			Simulation3DEngine engine = (Simulation3DEngine)sender;
@@ -115,11 +115,25 @@ namespace OpenHTM.IDE
 		}
 
 
+		/// <summary>
+		/// Event Handler. Handles object clicked on StateInformationPanel.
+		/// Displays object in WatchForm (Tab).
+		/// </summary>
+		/// <param name="sender">StateInformationPanel</param>
+		/// <param name="e"></param>
+		/// <param name="obj">Clicked object. Region, Column, Cell, Segment, Synapse.</param>
 		public void Handler_StateInfoPanelObjectClicked ( object sender, EventArgs e, object obj )
 		{
 			SetPropertyGridDataSource ( obj );
 		}
 
+		/// <summary>
+		/// Event Handler. Handles object selected from StateInformationPanel.
+		/// Creates new WatchWindow to display object and adds the window to watchWindowList.
+		/// </summary>
+		/// <param name="sender">StateInformationPanel</param>
+		/// <param name="e"></param>
+		/// <param name="obj">Selected object. Region, Column, Cell, Segment, Synapse.</param>
 		public void Handler_StateInfoPanelObjectSelected ( object sender, EventArgs e, object obj )
 		{
 			// only open new watch window if not already open
@@ -134,8 +148,15 @@ namespace OpenHTM.IDE
 				ww.Show ();
 				watchWindowList.Add ( ww );
 			}
-
 		}
+
+		/// <summary>
+		/// Event Handler. Handles object De-selected from StateInformationPanel.
+		/// Closes watchWindow for object and removes window from watchWindowList.
+		/// </summary>
+		/// <param name="sender">StateInformationPanel</param>
+		/// <param name="e"></param>
+		/// <param name="obj">De-Selected object. Region, Column, Cell, Segment, Synapse.</param>
 		public void Handler_StateInfoPanelObjectDeSelected ( object sender, EventArgs e, object obj )
 		{
 			WatchWindow winToClose = null;
@@ -152,7 +173,6 @@ namespace OpenHTM.IDE
 			{
 				winToClose.Close ();
 				this.watchWindowList.Remove ( winToClose );
-				Application.DoEvents ();
 			}
 		}
 		#endregion
@@ -177,6 +197,7 @@ namespace OpenHTM.IDE
 			{
 				this.watchPropertyGrid.SelectObject ( region, false, 500 );
 				this.watchPropertyGrid.Refresh ();
+				Application.DoEvents ();
 			}
 		}
 
@@ -184,27 +205,6 @@ namespace OpenHTM.IDE
 		private void Handler_WatchWindowClosed ( object sender, EventArgs e, object obj )
 		{
 			this.watchWindowList.Remove ( (WatchWindow)sender );
-
-			//WatchWindow winToRemove = null;
-			//foreach (WatchWindow w in this.watchWindowList)
-			//{
-			//	if (w == obj)
-			//	{
-			//		winToRemove = w;
-			//		break;
-			//	}
-
-			//	//if (w.objectDisplayed == obj)
-			//	//{
-			//	//	winToRemove = w;
-			//	//	break;
-			//	//}
-			//}
-
-			//if (winToRemove != null)
-			//{
-			//	this.watchWindowList.Remove ( winToRemove );
-			//}
 		}
 
 	}
