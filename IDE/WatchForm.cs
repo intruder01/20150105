@@ -13,14 +13,8 @@ using Region = OpenHTM.CLA.Region;
 
 namespace OpenHTM.IDE
 {
-	// when selection changes, broadcast new selection to 
-	// StateInformationPanel and Simulation3D so that current selection is
-	// always synchronised
-	public delegate void WatchFormSelectionSynch_Event (object sender, EventArgs e);
-
 	public partial class WatchForm : DockContent
 	{
-		public static event WatchFormSelectionSynch_Event WatchFormSelectionSynch = delegate { };
 
 		#region Fields
 

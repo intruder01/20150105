@@ -206,6 +206,7 @@ namespace OpenHTM.IDE
 				throw new Exception("Cant use this visualizer when Segment.MaxTimeSteps > 1");
 			}
 
+			
 			// Set fields
 			this._graphicsBitmap = new Bitmap(this.Width, this.Height);
 			this._startingViewPoint = new PointF(0, 0);
@@ -226,8 +227,7 @@ namespace OpenHTM.IDE
 
 			// start listening to WatchWindow events
 			WatchWindow.WatchWindowClosed += this.Handler_WatchWindowClosed;
-
-
+		
 		}
 
 		#endregion
@@ -1780,11 +1780,27 @@ namespace OpenHTM.IDE
 
 		private void Panel_KeyUp(object o, KeyEventArgs e)
 		{
-			if (e.Control)
+
+			//if ((e.Modifiers & Keys.Shift) == Keys.Shift)
+			//{
+			//	this._keyShiftIsPressed = false;
+			//}
+			//if ((e.Modifiers & Keys.Control) == Keys.Control)
+			//{
+			//	this._keyControlIsPressed = false;
+			//}
+			//if ((e.Modifiers & Keys.Alt) == Keys.Alt)
+			//{
+			//	this._keyAltIsPressed = false;
+			//}
+			
+			
+			
+			if (e.KeyData == Keys.ControlKey)
 			{
 				this._keyControlIsPressed = false;
 			}
-			if (e.Shift)
+			if (e.KeyData == Keys.ShiftKey)
 			{
 				this._keyShiftIsPressed = false;
 			}
@@ -1792,7 +1808,7 @@ namespace OpenHTM.IDE
 			{
 				this._keyControlIsPressed = false;
 			}
-			if (e.Alt)
+			if (e.KeyData == Keys.Alt)
 			{
 				this._keyAltIsPressed = false;
 			}
@@ -1846,6 +1862,37 @@ namespace OpenHTM.IDE
 
 			this.Display();
 		}
+
+		protected override bool ProcessCmdKey ( ref Message msg, Keys keyData )
+		{
+			
+			//capture up arrow key
+			if (keyData == Keys.Up)
+			{
+				MessageBox.Show ( "You pressed Up arrow key" );
+				return true;
+			}
+			//capture down arrow key
+			if (keyData == Keys.Down)
+			{
+				MessageBox.Show ( "You pressed Down arrow key" );
+				return true;
+			}
+			//capture left arrow key
+			if (keyData == Keys.Left)
+			{
+				MessageBox.Show ( "You pressed Left arrow key" );
+				return true;
+			}
+			//capture right arrow key
+			if (keyData == Keys.Right)
+			{
+				MessageBox.Show ( "You pressed Right arrow key" );
+				return true;
+			}
+			return base.ProcessCmdKey ( ref msg, keyData );
+		}
+
 
 		private void Panel_MouseMove(object sender, MouseEventArgs e)
 		{

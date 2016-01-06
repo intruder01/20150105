@@ -275,7 +275,6 @@ namespace OpenHTM.IDE
 		{
 			RefreshControlKeyIndicator ( shift, ctrl, alt );
 		}
-		
 
 	}
 }
