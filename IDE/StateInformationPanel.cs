@@ -888,6 +888,8 @@ namespace OpenHTM.IDE
 				// Does the mouse hover over the cell? let's check.
 				//if (this._keyControlIsPressed)
 				//{
+				if (this._pressingTheMouse)
+				{
 					if ((this._relativeMouseLocationInVirtualWorld.X >= cellPointVirtual.X) &&
 						(this._relativeMouseLocationInVirtualWorld.Y >= cellPointVirtual.Y) &&
 						(this._relativeMouseLocationInVirtualWorld.X < (cellPointVirtual.X + cellSizeVirtual.Width)) &&
@@ -896,11 +898,11 @@ namespace OpenHTM.IDE
 						this._mouseHoversEntity = cell;
 
 						// Paint a light over the highlighted cell.
-						grpOnBitmap.FillRectangle(new SolidBrush(Color.FromArgb(127, Color.White)),
+						grpOnBitmap.FillRectangle ( new SolidBrush ( Color.FromArgb ( 127, Color.White ) ),
 												  cellPoint.X, cellPoint.Y,
-												  cellSizeOnDisplay.Width, cellSizeOnDisplay.Height);
+												  cellSizeOnDisplay.Width, cellSizeOnDisplay.Height );
 					}
-				//}
+				}
 			}
 		}
 
@@ -1440,7 +1442,7 @@ namespace OpenHTM.IDE
 			}
 		}
 
-		private void DisplayNotification(Graphics grpOnBitmap)
+		private void DisplayNotification(Graphics grpOnBitmap) display hover cell like this / Or make notification function for general use
 		{
 			// Displaying the notification if neccessary.
 			// If we have not yet displayed enough frames of the notification, then draw
@@ -1910,8 +1912,8 @@ namespace OpenHTM.IDE
 
 			this._lastMouseLocation = new Point(e.X, e.Y);
 
-			// notify listeners of key states
-			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			//// notify listeners of key states
+			//StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
 
 			// If there are selected entities, display.
 			if (this._selectedEntities.Count > 0)
@@ -1936,7 +1938,7 @@ namespace OpenHTM.IDE
 			this._pressingTheMouse = false;
 
 			// notify listeners of key states
-			StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
+			//StateInformationPanel_KeyDnUp ( sender, e, this._keyShiftIsPressed, this._keyControlIsPressed, this._keyAltIsPressed );
 		}
 
 		private void Panel_MouseDown(object sender, MouseEventArgs e)
@@ -1962,8 +1964,9 @@ namespace OpenHTM.IDE
 						if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
 						{
 							this._selectedEntities.Add ( this._mouseHoversEntity );
-							StateInformationPanel_ObjectSelected ( this, e, this._mouseHoversEntity );
 						}
+						// Send selected notification to bring WatchWindow to front
+						StateInformationPanel_ObjectSelected ( this, e, this._mouseHoversEntity );
 					}
 					// Shift+Ctrl+LClick - remove item
 					if (this._keyShiftIsPressed && this._keyControlIsPressed && !this._keyAltIsPressed)

@@ -27,7 +27,7 @@ namespace OpenHTM.IDE
 			get { return _objectDisplayed; }
 			protected set { 
 							_objectDisplayed = value; 
-							propertyGrid1.SelectObject ( _objectDisplayed, false, 500 ); 
+							propertyGrid1.SelectObject ( _objectDisplayed, false, 1000 ); 
 						}
 		}
 
@@ -49,7 +49,7 @@ namespace OpenHTM.IDE
 
 			if (titlePrefix.Length > 0 )
 				this.Text = titlePrefix + " ";
-			this.Text += text;
+			this.Text = text;
 
 		}
 

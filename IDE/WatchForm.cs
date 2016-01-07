@@ -139,7 +139,13 @@ namespace OpenHTM.IDE
 			// only open new watch window if not already open
 			foreach (WatchWindow w in this.watchWindowList)
 			{
-				if (w.objectDisplayed == obj) return;
+				// If object already on list - bring object's WatchWondow to front
+				if (w.objectDisplayed == obj)
+				{
+					w.TopLevel = true;
+					return;
+				}
+					
 			}
 
 			WatchWindow ww = new WatchWindow ( obj, "" );
