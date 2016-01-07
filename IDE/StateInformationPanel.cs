@@ -571,18 +571,21 @@ namespace OpenHTM.IDE
 			// Does the mouse hovers over the column? let's check.
 			//if (this._keyControlIsPressed)
 			//{
+			if (this._pressingTheMouse)
+			{
 				if ((this._relativeMouseLocationInVirtualWorld.X >= columnPointVirtual.X) &&
 					(this._relativeMouseLocationInVirtualWorld.Y >= columnPointVirtual.Y) &&
 					(this._relativeMouseLocationInVirtualWorld.X < (columnPointVirtual.X + columnSizeVirtual.Width)) &&
 					(this._relativeMouseLocationInVirtualWorld.Y < (columnPointVirtual.Y + columnSizeVirtual.Height)))
 				{
-					this._mouseHoversEntity = column;
+					//this._mouseHoversEntity = column;
 
 					// Paint a light over the highlighted cell.
-					grpOnBitmap.FillRectangle(new SolidBrush(Color.FromArgb(127, Color.White)),
+					grpOnBitmap.FillRectangle ( new SolidBrush ( Color.FromArgb ( 127, Color.White ) ),
 											  columnPointOnDisplay.X, columnPointOnDisplay.Y,
-											  columnSizeOnDisplay.Width, columnSizeOnDisplay.Height);
+											  columnSizeOnDisplay.Width, columnSizeOnDisplay.Height );
 				}
+			}
 			//}
 		}
 
@@ -895,7 +898,7 @@ namespace OpenHTM.IDE
 						(this._relativeMouseLocationInVirtualWorld.X < (cellPointVirtual.X + cellSizeVirtual.Width)) &&
 						(this._relativeMouseLocationInVirtualWorld.Y < (cellPointVirtual.Y + cellSizeVirtual.Height)))
 					{
-						this._mouseHoversEntity = cell;
+						//this._mouseHoversEntity = cell;
 
 						// Paint a light over the highlighted cell.
 						grpOnBitmap.FillRectangle ( new SolidBrush ( Color.FromArgb ( 127, Color.White ) ),
@@ -1036,8 +1039,10 @@ namespace OpenHTM.IDE
 			return maxPermanence;
 		}
 
-		public void GetObjectUnderMouse ( Graphics grpOnBitmap )
+		public void GetObjectUnderMouse ()
 		{
+			//Graphics grpOnBitmap = Graphics.FromImage ( this._graphicsBitmap );
+
 			// Figure out if we want to display internals cells or just columns.
 			bool showingInternalCells = this.ShowingInternalCells ();
 
@@ -1082,14 +1087,45 @@ namespace OpenHTM.IDE
 
 						this.GetCellVirtualPointAndSize ( cell, out cellPointVirtual, out cellSizeVirtual );
 						this.GetCellDisplayPointAndSize ( cell, out cellPoint, out cellSizeOnDisplay );
+
+						// Does the mouse hover over the cell? let's check.
+						//if (this._keyControlIsPressed)
+						//{
+						if (this._pressingTheMouse)
+						{
+							if ((this._relativeMouseLocationInVirtualWorld.X >= cellPointVirtual.X) &&
+								(this._relativeMouseLocationInVirtualWorld.Y >= cellPointVirtual.Y) &&
+								(this._relativeMouseLocationInVirtualWorld.X < (cellPointVirtual.X + cellSizeVirtual.Width)) &&
+								(this._relativeMouseLocationInVirtualWorld.Y < (cellPointVirtual.Y + cellSizeVirtual.Height)))
+							{
+								this._mouseHoversEntity = cell;
+
+								//// Paint a light over the highlighted cell.
+								//grpOnBitmap.FillRectangle ( new SolidBrush ( Color.FromArgb ( 127, Color.White ) ),
+								//						  cellPoint.X, cellPoint.Y,
+								//						  cellSizeOnDisplay.Width, cellSizeOnDisplay.Height );
+							}
+						}
 					}
 				}
-
-				if (!showingInternalCells)
+				else
 				{
-					
-				}
+					// Does the mouse hovers over the column? let's check.
+					//if (this._keyControlIsPressed)
+					//{
+					if ((this._relativeMouseLocationInVirtualWorld.X >= columnPointVirtual.X) &&
+						(this._relativeMouseLocationInVirtualWorld.Y >= columnPointVirtual.Y) &&
+						(this._relativeMouseLocationInVirtualWorld.X < (columnPointVirtual.X + columnSizeVirtual.Width)) &&
+						(this._relativeMouseLocationInVirtualWorld.Y < (columnPointVirtual.Y + columnSizeVirtual.Height)))
+					{
+						this._mouseHoversEntity = column;
 
+						//// Paint a light over the highlighted cell.
+						//grpOnBitmap.FillRectangle ( new SolidBrush ( Color.FromArgb ( 127, Color.White ) ),
+						//						  columnPointOnDisplay.X, columnPointOnDisplay.Y,
+						//						  columnSizeOnDisplay.Width, columnSizeOnDisplay.Height );
+					}
+				}
 			}
 		}
 
@@ -2003,7 +2039,7 @@ namespace OpenHTM.IDE
 			this._pressingTheMouse = true;
 			this._lastMouseLocationWasSet = false;
 
-			this.Display (); // JS - call to refresh _mouseHoversEntity
+			GetObjectUnderMouse ();
 
 			// Do we hover on something and pressing control? if yes, then add it
 			// To the list of entities selected.
