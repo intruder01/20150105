@@ -1036,6 +1036,63 @@ namespace OpenHTM.IDE
 			return maxPermanence;
 		}
 
+		public void GetObjectUnderMouse ( Graphics grpOnBitmap )
+		{
+			// Figure out if we want to display internals cells or just columns.
+			bool showingInternalCells = this.ShowingInternalCells ();
+
+			// Cycle columns
+			foreach (var column in this._region.Columns)
+			{
+				// Column under mouse
+				Point columnPointOnDisplay;
+				Size columnSizeOnDisplay;
+				PointF columnPointVirtual;
+				SizeF columnSizeVirtual;
+				this.GetColumnDisplayPointAndSize ( column, out columnPointOnDisplay, out columnSizeOnDisplay );
+				this.GetColumnVirtualPointAndSize ( column, out columnPointVirtual, out columnSizeVirtual );
+
+				// A list of conditions in order to speed up scanning and to ignore this column.
+				if (columnPointOnDisplay.X > this._graphicsBitmap.Width)
+				{
+					continue;
+				}
+				if (columnPointOnDisplay.Y > this._graphicsBitmap.Height)
+				{
+					continue;
+				}
+				if ((columnPointOnDisplay.X < 0) && ((columnPointOnDisplay.X + columnSizeOnDisplay.Width) < 0))
+				{
+					continue;
+				}
+				if ((columnPointOnDisplay.Y < 0) && ((columnPointOnDisplay.Y + columnSizeOnDisplay.Height) < 0))
+				{
+					continue;
+				}
+
+				if (showingInternalCells)
+				{
+					foreach (var cell in column.Cells)
+					{
+						// Cell under mouse
+						Point cellPoint;
+						Size cellSizeOnDisplay;
+						PointF cellPointVirtual;
+						SizeF cellSizeVirtual;
+
+						this.GetCellVirtualPointAndSize ( cell, out cellPointVirtual, out cellSizeVirtual );
+						this.GetCellDisplayPointAndSize ( cell, out cellPoint, out cellSizeOnDisplay );
+					}
+				}
+
+				if (!showingInternalCells)
+				{
+					
+				}
+
+			}
+		}
+
 		/// <summary>
 		/// Calculates the synapse color for the selected cells.
 		/// </summary>
@@ -1442,7 +1499,7 @@ namespace OpenHTM.IDE
 			}
 		}
 
-		private void DisplayNotification(Graphics grpOnBitmap) display hover cell like this / Or make notification function for general use
+		private void DisplayNotification(Graphics grpOnBitmap) 
 		{
 			// Displaying the notification if neccessary.
 			// If we have not yet displayed enough frames of the notification, then draw
@@ -1945,6 +2002,8 @@ namespace OpenHTM.IDE
 		{
 			this._pressingTheMouse = true;
 			this._lastMouseLocationWasSet = false;
+
+			this.Display (); // JS - call to refresh _mouseHoversEntity
 
 			// Do we hover on something and pressing control? if yes, then add it
 			// To the list of entities selected.
