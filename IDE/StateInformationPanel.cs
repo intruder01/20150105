@@ -2151,6 +2151,7 @@ namespace OpenHTM.IDE
 		private void Handler_WatchWindowClosed ( object sender, EventArgs e, object obj )
 		{
 			this._selectedEntities.Remove ( obj );
+			Display ();
 		}
 
 		#endregion
