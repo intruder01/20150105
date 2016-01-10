@@ -128,6 +128,16 @@ namespace OpenHTM.IDE
 		// States for synapses
 		private Hashtable _lastTimestepSynapses = new Hashtable();
 		private List<DistalSynapseChange> _synapsesChanges = new List<DistalSynapseChange>();
+		
+		
+
+
+		#endregion
+
+		#region Properties
+
+
+
 
 		#endregion
 
@@ -716,14 +726,13 @@ namespace OpenHTM.IDE
 		}
 
 		// Note that the prediction is for one step forward.
-		public void ShowPredictionReconstructionModeRows(Graphics grpOnBitmap)
+		public void ShowPredictionReconstructionModeRows ( Graphics grpOnBitmap ) // 20160109-1
 		{
-			float[,] predictionReconstruction =
-				this._region.GetPredictionReconstruction(1);
+			float[,] inputPredictionReconstruction = this._region.GetPredictionReconstruction(1);
 			float minPrediction = 0, maxPrediction = 0;
 
 			// Find max.
-			foreach (var amount in predictionReconstruction)
+			foreach (var amount in inputPredictionReconstruction)
 			{
 				if (amount > maxPrediction)
 				{
@@ -736,7 +745,7 @@ namespace OpenHTM.IDE
 			minPrediction = maxPrediction;
 
 			// Find min.
-			foreach (var amount in predictionReconstruction)
+			foreach (var amount in inputPredictionReconstruction)
 			{
 				if ((amount < minPrediction) && (amount > 0))
 				{
@@ -752,14 +761,17 @@ namespace OpenHTM.IDE
 					Size sizeOnDisplay = this.GetSizeOnDisplay(_sizeColumnInVirtual);
 					Point displayPoint = 
 						this.ConvertViewPointToDisplayPoint(new PointF(x, y));
-					float reconstructionStrength = predictionReconstruction[x, y];
+					float reconstructionStrength = inputPredictionReconstruction[x, y];
 
 					if (reconstructionStrength > 0)
 					{
 						float precentageFromReconstructionRange =
 							(reconstructionStrength - minPrediction) /
 							(maxPrediction - minPrediction);
-						var colorByte = (byte)(precentageFromReconstructionRange * byte.MaxValue);
+						// 20150109-1
+						//var colorByte = (byte)(precentageFromReconstructionRange * byte.MaxValue);
+						var colorByte = (byte)((1 - precentageFromReconstructionRange) * byte.MaxValue);
+						
 						Color color = Color.FromArgb(colorByte, colorByte, colorByte);
 
 						grpOnBitmap.FillRectangle(new SolidBrush(color),

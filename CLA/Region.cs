@@ -246,6 +246,16 @@ namespace OpenHTM.CLA
 		[XmlIgnore]
 		public static ParallelOptions ParallelOptions { get; set; }
 
+
+		// 20160109-1
+		// declare as property since it may be accessed by other viewer classes
+		private float[,] _predictionReconstruction;
+		public float[,] PredictionReconstruction
+		{
+			get { return _predictionReconstruction; }
+			protected set { _predictionReconstruction = value; }
+		}
+
 		#endregion
 
 		#region Constructors
@@ -457,6 +467,10 @@ namespace OpenHTM.CLA
 				this.DesiredLocalActivity = Math.Max(2, this.DesiredLocalActivity);
 
 			}
+
+			// 20160109-1
+			// Allocate input reconstruction array
+			this.PredictionReconstruction = new float[this.InputSize.Width, this.InputSize.Height];
 			
 			Write (0);
 		}
@@ -513,6 +527,7 @@ namespace OpenHTM.CLA
 			// TODO: should all statistics be run after region processing?
 			this.ComputeColumnAccuracy();
 			this.ComputeNumberActiveColumns();
+			this.GetPredictionReconstruction(1);
 
 			// If this region is child of an higher region in the hierarchy then 
 			// feedforward input to the latter
@@ -1276,14 +1291,13 @@ namespace OpenHTM.CLA
 		}
 
 		/// <summary>
-		/// Converts the column's predictions value into reconstruction of the actual
-		/// Input space.
+		/// Converts the column's predictions value into reconstruction of the Input space.
 		/// </summary>
 		/// <returns>A float matrix </returns>
-		public float[,] GetPredictionReconstruction(int predictionStep)
+		public float[,] GetPredictionReconstruction(int predictionStep) // 20160109-1
 		{
 			float[,] columnsPrediction = this.GetPredictingColumnsByStrength(predictionStep);
-			var reconstructionMatrix = new float[this.InputSize.Width,this.InputSize.Height];
+			this.PredictionReconstruction = new float[this.InputSize.Width,this.InputSize.Height];
 
 			foreach (var column in this.Columns)
 			{
@@ -1291,12 +1305,12 @@ namespace OpenHTM.CLA
 				{
 					if (synapse.IsConnected())
 					{
-						reconstructionMatrix[synapse.InputSource.X, synapse.InputSource.Y] += columnsPrediction[column.PositionInRegion.X, column.PositionInRegion.Y] * synapse.Permanence;
+						PredictionReconstruction[synapse.InputSource.X, synapse.InputSource.Y] += columnsPrediction[column.PositionInRegion.X, column.PositionInRegion.Y] * synapse.Permanence;
 					}
 				}
 			}
 
-			return reconstructionMatrix;
+			return PredictionReconstruction;
 		}
 
 

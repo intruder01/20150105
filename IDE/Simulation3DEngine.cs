@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using System.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +9,7 @@ using OpenHTM.CLA;
 using OpenHTM.CLA.Statistics;
 //using OpenHTM.Shared.Interfaces;
 
+//using Color = Microsoft.Xna.Framework.Color;	
 
 namespace OpenHTM.IDE
 {
@@ -148,7 +148,7 @@ namespace OpenHTM.IDE
 		/// <summary>
 		/// Reference to HtmRegion
 		/// </summary>
-		public Region Region { get; set; }
+		public CLA.Region Region { get; set; }
 
 		/// <summary>
 		/// Reference to list of columsn from region for traversing
@@ -170,7 +170,7 @@ namespace OpenHTM.IDE
 
 			#region Constructor
 
-			public HtmColorInformation(Color color, string info)
+			public HtmColorInformation ( Color color, string info )
 			{
 				this.HtmColor = color;
 				this.HtmInformation = info;
@@ -894,15 +894,15 @@ namespace OpenHTM.IDE
 
 				// Load Cell Colors for net
 				this._dictionaryCellColors = new Dictionary<HtmCellColors, HtmColorInformation>();
-				this._dictionaryCellColors.Add(HtmCellColors.Active, new HtmColorInformation(Color.Black, "Cell is activated"));
-				this._dictionaryCellColors.Add(HtmCellColors.Inactive, new HtmColorInformation(Color.White, "Cell is inactive"));
-				this._dictionaryCellColors.Add(HtmCellColors.Learning, new HtmColorInformation(Color.DarkGray, "Cell is learning"));
-				this._dictionaryCellColors.Add(HtmCellColors.Predicting, new HtmColorInformation(Color.Orange, "Cell is predicting (t+2...)"));
-				this._dictionaryCellColors.Add(HtmCellColors.SequencePredicting, new HtmColorInformation(Color.Aqua, "Cell is sequence predicting (t+1)"));
-				this._dictionaryCellColors.Add(HtmCellColors.RightPrediction, new HtmColorInformation(Color.LimeGreen, "Cell correctly predicted"));
-				this._dictionaryCellColors.Add(HtmCellColors.FalsePrediction, new HtmColorInformation(Color.Red, "Cell falsely predicted"));
-				this._dictionaryCellColors.Add(HtmCellColors.Selected, new HtmColorInformation(Color.Brown, "Cell prediction is lost"));
-				this._dictionaryCellColors.Add(HtmCellColors.Inhibited, new HtmColorInformation(Color.Navy, "Column is inhibited"));
+				this._dictionaryCellColors.Add ( HtmCellColors.Active, new HtmColorInformation (Color.Black, "Cell is activated" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.Inactive, new HtmColorInformation ( Color.White, "Cell is inactive" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.Learning, new HtmColorInformation ( Color.DarkGray, "Cell is learning" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.Predicting, new HtmColorInformation ( Color.Orange, "Cell is predicting (t+2...)" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.SequencePredicting, new HtmColorInformation ( Color.Aqua, "Cell is sequence predicting (t+1)" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.RightPrediction, new HtmColorInformation ( Color.LimeGreen, "Cell correctly predicted" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.FalsePrediction, new HtmColorInformation ( Color.Red, "Cell falsely predicted" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.Selected, new HtmColorInformation ( Color.Brown, "Cell prediction is lost" ) );
+				this._dictionaryCellColors.Add ( HtmCellColors.Inhibited, new HtmColorInformation ( Color.Navy, "Column is inhibited" ) );
 
 				this._dictionaryProximalSynapseColors = new Dictionary<HtmProximalSynapseColors, HtmColorInformation> ();
 				this._dictionaryProximalSynapseColors.Add ( HtmProximalSynapseColors.Default, new HtmColorInformation ( Color.White, "Proximal synapse not active, not connected" ) );
@@ -921,7 +921,10 @@ namespace OpenHTM.IDE
 				this.HtmRegionColumns = this.Region.Columns;
 
 				// Prepare Array for 2-dim-content
+				
+				// 20160109-1
 				this._predictions = new float[this.Region.Size.Width,this.Region.Size.Height];
+				//this._predictions = new float[this.Region.InputSize.Width, this.Region.InputSize.Height];
 				this._activeColumns = new float[this.Region.Size.Width,this.Region.Size.Height];
 
 				// Prepare Cube
@@ -1146,12 +1149,13 @@ namespace OpenHTM.IDE
 			this.DrawLegend();
 
 			// Draw HTM
-			this.DrawHtmPlane();
+			this.DrawHtmInputPlane();
 			this.DrawHtmRegion(false);
 			this.DrawHtmRegion(true);
 
 			// Draw Prediction Plane
 			this.DrawHtmRegionPredictionPlane();
+			this.DrawHtmRegionPredictionReconstructionPlane ();	//20160109-1
 
 			// Draw Active Columns Plane
 			this.DrawHtmActiveColsPlane();
@@ -1175,9 +1179,9 @@ namespace OpenHTM.IDE
 		{
 			var statistics = new Statistics();
 
-			if (element is Region)
+			if (element is CLA.Region)
 			{
-				var region = element as Region;
+				var region = element as CLA.Region;
 				statistics = region.Statistics;
 
 				// Set Legend-Information on the right:
@@ -1224,38 +1228,38 @@ namespace OpenHTM.IDE
 
 			// Draw left legend
 			this._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, null, null);
-			this._spriteBatch.DrawString(this._spriteFont, "Legend", startVectorLeft, Color.Black);
+			this._spriteBatch.DrawString ( this._spriteFont, "Legend", startVectorLeft, Color.Black );
 
 			foreach (var item in this._dictionaryCellColors)
 			{
 				startVectorLeft.Y += gridHeight + gridHeightBuffer;
 				this._spriteBatch.Draw(this._gridTexture, new Rectangle((int) startVectorLeft.X, (int) startVectorLeft.Y, gridWidth, gridHeight), item.Value.HtmColor);
-				this._spriteBatch.DrawString(this._spriteFont, item.Value.HtmInformation, new Vector2(startVectorLeft.X + gridWidthBuffer, startVectorLeft.Y), Color.White);
+				this._spriteBatch.DrawString ( this._spriteFont, item.Value.HtmInformation, new Vector2 ( startVectorLeft.X + gridWidthBuffer, startVectorLeft.Y ), Color.White );
 			}
 
 			// Draw right legend
 			string str;
-			this._spriteBatch.DrawString(this._spriteFont, "HTM Information", startVectorRight, Color.Black);
+			this._spriteBatch.DrawString ( this._spriteFont, "HTM Information", startVectorRight, Color.Black );
 			startVectorRight.Y += gridHeight + gridHeightBuffer + gridHeightBuffer;
 			startVectorRightTab.Y += gridHeight + gridHeightBuffer + gridHeightBuffer;
-			this._spriteBatch.DrawString(this._spriteFont, "Steps: ", startVectorRight, Color.White);
-			this._spriteBatch.DrawString(this._spriteFont, this._rightLegend.StepCount, startVectorRightTab, Color.White);
+			this._spriteBatch.DrawString ( this._spriteFont, "Steps: ", startVectorRight, Color.White );
+			this._spriteBatch.DrawString ( this._spriteFont, this._rightLegend.StepCount, startVectorRightTab, Color.White );
 			startVectorRight.Y += gridHeight + gridHeightBuffer;
 			startVectorRightTab.Y += gridHeight + gridHeightBuffer;
-			this._spriteBatch.DrawString(this._spriteFont, "Chosen: ", startVectorRight, Color.White);
-			this._spriteBatch.DrawString(this._spriteFont, this._rightLegend.ChosenHtmElement, startVectorRightTab, Color.White);
+			this._spriteBatch.DrawString ( this._spriteFont, "Chosen: ", startVectorRight, Color.White );
+			this._spriteBatch.DrawString ( this._spriteFont, this._rightLegend.ChosenHtmElement, startVectorRightTab, Color.White );
 			startVectorRight.Y += gridHeight + gridHeightBuffer;
 			startVectorRightTab.Y += gridHeight + gridHeightBuffer;
-			this._spriteBatch.DrawString(this._spriteFont, "Position: ", startVectorRight, Color.White);
-			this._spriteBatch.DrawString(this._spriteFont, this._rightLegend.PositionElement, startVectorRightTab, Color.White);
+			this._spriteBatch.DrawString ( this._spriteFont, "Position: ", startVectorRight, Color.White );
+			this._spriteBatch.DrawString ( this._spriteFont, this._rightLegend.PositionElement, startVectorRightTab, Color.White );
 			startVectorRight.Y += gridHeight + gridHeightBuffer;
 			startVectorRightTab.Y += gridHeight + gridHeightBuffer;
-			this._spriteBatch.DrawString(this._spriteFont, "Activity Rate: ", startVectorRight, Color.White);
-			this._spriteBatch.DrawString(this._spriteFont, this._rightLegend.ActivityRate, startVectorRightTab, Color.White);
+			this._spriteBatch.DrawString ( this._spriteFont, "Activity Rate: ", startVectorRight, Color.White );
+			this._spriteBatch.DrawString ( this._spriteFont, this._rightLegend.ActivityRate, startVectorRightTab, Color.White );
 			startVectorRight.Y += gridHeight + gridHeightBuffer;
 			startVectorRightTab.Y += gridHeight + gridHeightBuffer;
-			this._spriteBatch.DrawString(this._spriteFont, "Precision: ", startVectorRight, Color.White);
-			this._spriteBatch.DrawString(this._spriteFont, this._rightLegend.PrecisionRate, startVectorRightTab, Color.White);
+			this._spriteBatch.DrawString ( this._spriteFont, "Precision: ", startVectorRight, Color.White );
+			this._spriteBatch.DrawString ( this._spriteFont, this._rightLegend.PrecisionRate, startVectorRightTab, Color.White );
 
 			//debug js
 			//startVectorRight.Y += gridHeight + gridHeightBuffer;
@@ -1353,7 +1357,7 @@ namespace OpenHTM.IDE
 		/// <summary>
 		/// Draws the region prediction as flat 2-d array-map
 		/// </summary>
-		private void DrawHtmRegionPredictionPlane()
+		private void DrawHtmRegionPredictionPlane ()
 		{
 			if (!Simulation3D.Form.ShowPredictedGrid)
 			{
@@ -1362,9 +1366,115 @@ namespace OpenHTM.IDE
 
 			int x = 10;
 			int y = this.GraphicsDevice.PresentationParameters.BackBufferHeight -
-			        this._activeColumns.GetLength(0) * (_gridHeight + _gridHeightBuffer) - 50;
-			var startVectorLeft = new Vector2(x, y);
-			this.DrawHtmActivationMap(startVectorLeft, this._predictions, "Region Prediction");
+					this._activeColumns.GetLength ( 0 ) * (_gridHeight + _gridHeightBuffer) - 50;
+			var startVectorLeft = new Vector2 ( x, y );
+			// 20160109-1
+			this.DrawHtmActivationMap ( startVectorLeft, this._predictions, "Region Prediction" );
+		}
+
+		//public void ShowPredictionReconstructionRows_Original ( Graphics grpOnBitmap ) // 20160109-1
+		//{
+		//	float[,] predictionReconstruction = this._region.GetPredictionReconstruction ( 1 );
+		//	float minPrediction = 0, maxPrediction = 0;
+
+		//	// Find max.
+		//	foreach (var amount in predictionReconstruction)
+		//	{
+		//		if (amount > maxPrediction)
+		//		{
+		//			maxPrediction = amount;
+		//		}
+		//	}
+
+		//	// The min feedforward input must be bigger than 0 (ignore the inputs who received
+		//	// Zero)
+		//	minPrediction = maxPrediction;
+
+		//	// Find min.
+		//	foreach (var amount in predictionReconstruction)
+		//	{
+		//		if ((amount < minPrediction) && (amount > 0))
+		//		{
+		//			minPrediction = amount;
+		//		}
+		//	}
+
+		//	// Draw grid.
+		//	for (int x = 0; x < this._region.InputSize.Width; x++)
+		//	{
+		//		for (int y = 0; y < this._region.InputSize.Height; y++)
+		//		{
+		//			Size sizeOnDisplay = this.GetSizeOnDisplay ( _sizeColumnInVirtual );
+		//			Point displayPoint =
+		//				this.ConvertViewPointToDisplayPoint ( new PointF ( x, y ) );
+		//			float reconstructionStrength = predictionReconstruction[x, y];
+
+		//			if (reconstructionStrength > 0)
+		//			{
+		//				float precentageFromReconstructionRange =
+		//					(reconstructionStrength - minPrediction) /
+		//					(maxPrediction - minPrediction);
+		//				var colorByte = (byte)(precentageFromReconstructionRange * byte.MaxValue);
+		//				Color color = Color.FromArgb ( colorByte, colorByte, colorByte );
+
+		//				grpOnBitmap.FillRectangle ( new SolidBrush ( color ),
+		//										  displayPoint.X, displayPoint.Y,
+		//										  sizeOnDisplay.Width, sizeOnDisplay.Height );
+		//			}
+
+		//			grpOnBitmap.DrawRectangle ( new Pen ( Color.Black, 3 ),
+		//									  displayPoint.X, displayPoint.Y,
+		//									  sizeOnDisplay.Width, sizeOnDisplay.Height );
+		//		}
+		//	}
+		//}
+
+		/// <summary>
+		/// Draws the region prediction reconstruction in Input space as flat 2-d array-map
+		/// </summary>
+		private void DrawHtmRegionPredictionReconstructionPlane () // 20160109-1
+		{
+			if (!Simulation3D.Form.ShowPredictionReconstructiondGrid)
+			{
+				return;
+			}
+
+			// TODO perform this in Region - only once per pass, not in rendering engine
+			//float[,] inputPredictionReconstruction = this.Region.GetPredictionReconstruction ( 1 );
+			
+			// obtain PredictionReconstruction calculated by Region on each step
+			float[,] inputPredictionReconstruction = this.Region.PredictionReconstruction;
+			//float minPrediction = 0, maxPrediction = 0;
+
+			//// Find max.
+			//foreach (var amount in inputPredictionReconstruction)
+			//{
+			//	if (amount > maxPrediction)
+			//	{
+			//		maxPrediction = amount;
+			//	}
+			//}
+
+			//// The min feedforward input must be bigger than 0 (ignore the inputs who received
+			//// Zero)
+			//minPrediction = maxPrediction;
+
+			//// Find min.
+			//foreach (var amount in inputPredictionReconstruction)
+			//{
+			//	if ((amount < minPrediction) && (amount > 0))
+			//	{
+			//		minPrediction = amount;
+			//	}
+			//} 
+
+
+			int x = 10;
+			int y = this.GraphicsDevice.PresentationParameters.BackBufferHeight -
+					this._activeColumns.GetLength ( 0 ) * (_gridHeight + _gridHeightBuffer) - 50;
+			var startVectorLeft = new Vector2 ( x, y );
+			// 20160109-1
+			this.DrawHtmActivationMap ( startVectorLeft, inputPredictionReconstruction, "Input Prediction" );
 		}
 
 		/// <summary>
@@ -1373,11 +1483,35 @@ namespace OpenHTM.IDE
 		/// <param name="startVectorLeft"></param>
 		/// <param name="mapData"></param>
 		/// <param name="title"> </param>
-		private void DrawHtmActivationMap(Vector2 startVectorLeft, float[,] mapData, string title)
+		private void DrawHtmActivationMap(Vector2 startVectorLeft, float[,] mapData, string title) //20160109-1
 		{
 			// Count active elements
 			int activeCounter = 0;
 			var gridLeftStart = (int) startVectorLeft.X;
+
+			float minPrediction = 0, maxPrediction = 0;
+
+			// Find max.
+			foreach (var amount in mapData)
+			{
+				if (amount > maxPrediction)
+				{
+					maxPrediction = amount;
+				}
+			}
+
+			// The min feedforward input must be bigger than 0 (ignore the inputs who received
+			// Zero)
+			minPrediction = maxPrediction;
+
+			// Find min.
+			foreach (var amount in mapData)
+			{
+				if ((amount < minPrediction) && (amount > 0))
+				{
+					minPrediction = amount;
+				}
+			} 
 
 			// Draw Prediction Legend
 			this._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
@@ -1397,13 +1531,29 @@ namespace OpenHTM.IDE
 						activeCounter++;
 					}
 
-					// Adapt color
-					float component = (1 - mapData[i, j]) * 255;
-					var newColor = new Color(component, component, component);
+					float reconstructionStrength = mapData[i, j];
 
-					this._spriteBatch.Draw(this._gridTexture,
-					                       new Rectangle((int) startVectorLeft.X, (int) startVectorLeft.Y,
-					                                     _gridWidth, _gridHeight), newColor);
+					if (reconstructionStrength > 0)
+					{
+						// Adapt color
+						//float component = (1 - mapData[i, j]) * 255;
+						float precentageFromReconstructionRange =
+								(reconstructionStrength - minPrediction) /
+								(maxPrediction - minPrediction);
+
+						var colorByte = (byte)((1 - precentageFromReconstructionRange) * byte.MaxValue);
+						Color newColor = new Color ( (int)colorByte, (int)colorByte, (int)colorByte );
+						
+						this._spriteBatch.Draw ( this._gridTexture,
+											   new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+												_gridWidth, _gridHeight ), newColor );
+					}
+					else
+					{
+						this._spriteBatch.Draw ( this._gridTexture,
+											   new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+															 _gridWidth, _gridHeight ), Color.White );
+					}
 					startVectorLeft.X += _gridWidth + _gridWidthBuffer;
 				}
 				startVectorLeft.X = gridLeftStart;
@@ -1416,6 +1566,56 @@ namespace OpenHTM.IDE
 			this._spriteBatch.End();
 		}
 
+
+
+		/// <summary>
+		/// Draws a 2d-map on screen at wanted position
+		/// </summary>
+		/// <param name="startVectorLeft"></param>
+		/// <param name="mapData"></param>
+		/// <param name="title"> </param>
+		private void DrawHtmInputPredictionReconstructionMap ( Vector2 startVectorLeft, float[,] mapData, string title )
+		{
+			// Count active elements
+			int activeCounter = 0;
+			var gridLeftStart = (int)startVectorLeft.X;
+
+			// Draw Prediction Legend
+			this._spriteBatch.Begin ( SpriteSortMode.Deferred, BlendState.NonPremultiplied,
+									SamplerState.AnisotropicClamp, null, null );
+			this._spriteBatch.DrawString ( this._spriteFont, title, startVectorLeft, Color.Black );
+			// Go one more line down
+			startVectorLeft.Y += _gridHeight + _gridHeightBuffer;
+
+			for (int i = mapData.GetLength ( 0 ) - 1; i >= 0; i--)
+			{
+				// Go one more line down
+				startVectorLeft.Y += _gridHeight + _gridHeightBuffer;
+				for (int j = 0; j < mapData.GetLength ( 1 ); j++)
+				{
+					if (mapData[i, j] == 1)
+					{
+						activeCounter++;
+					}
+
+					// Adapt color
+					float component = (1 - mapData[i, j]) * 255;
+					Color newColor = new Color ( (int)component, (int)component, (int)component );
+
+					this._spriteBatch.Draw ( this._gridTexture,
+										   new Rectangle ( (int)startVectorLeft.X, (int)startVectorLeft.Y,
+														 _gridWidth, _gridHeight ), newColor );
+					startVectorLeft.X += _gridWidth + _gridWidthBuffer;
+				}
+				startVectorLeft.X = gridLeftStart;
+			}
+
+			string activeColumnsString = "Active Columns per step: " + activeCounter.ToString ();
+			startVectorLeft.Y += _gridHeight + _gridHeightBuffer;
+			this._spriteBatch.DrawString ( this._spriteFont, activeColumnsString, startVectorLeft, Color.Black );
+
+			this._spriteBatch.End ();
+		}
 
 		/// <summary>
 		/// DrawHtmRegion
@@ -1521,7 +1721,8 @@ namespace OpenHTM.IDE
 						// Draw synapse connections
 						this.DrawDistalSynapseConnections(ref worldTranslationZ, ref worldRotate, column, cell);
 					}
-
+					
+					// 20160109-1
 					if (!inactiveCells)
 					{
 						// Send column indices with actual prediction value in 2-dimArray
@@ -1566,7 +1767,7 @@ namespace OpenHTM.IDE
 		/// <param name="cell"></param>
 		/// <param name="color"></param>
 		/// <param name="alphaValue"></param>
-		private void GetColorFromCell(Cell cell, out Color color, out float alphaValue)
+		private void GetColorFromCell ( Cell cell, out Color color, out float alphaValue )
 		{
 			color = this._dictionaryCellColors[HtmCellColors.Inactive].HtmColor;
 			alphaValue = .1f; // All conditions can be false. 
@@ -1858,7 +2059,7 @@ namespace OpenHTM.IDE
 		/// <param name="distalSynapse"></param>
 		/// <param name="color"></param>
 		/// <param name="alphaValue"></param>
-		private void  GetColorFromDistalSynapse ( DistalSynapse distalSynapse, out Color color, out float alphaValue )
+		private void GetColorFromDistalSynapse ( DistalSynapse distalSynapse, out Color color, out float alphaValue )
 		{
 			color = this._dictionaryDistalSynapseColors[HtmDistalSynapseColors.Default].HtmColor;
 			alphaValue = .1f; // All conditions can be false. 
@@ -1903,7 +2104,7 @@ namespace OpenHTM.IDE
 		/// <summary>
 		/// Draws input bitmap. Attention: planes is translated also according to constants for better positioning
 		/// </summary>
-		private void DrawHtmPlane()
+		private void DrawHtmInputPlane()
 		{
 			try
 			{

@@ -37,6 +37,7 @@
 			this.menuShowCoordinateSystem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuActiveColumnGrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuShowPredictedGrid = new System.Windows.Forms.ToolStripMenuItem();
+			this.regionPredictionReconstructionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCorrectButton = new System.Windows.Forms.ToolStripButton();
 			this.showSeqPredictingButton = new System.Windows.Forms.ToolStripButton();
 			this.showPredictingButton = new System.Windows.Forms.ToolStripButton();
@@ -89,7 +90,8 @@
             this.menuShowTemporalLearning,
             this.menuShowCoordinateSystem,
             this.menuActiveColumnGrid,
-            this.menuShowPredictedGrid});
+            this.menuShowPredictedGrid,
+            this.regionPredictionReconstructionToolStripMenuItem});
 			this.menuShow.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.menuShow.Name = "menuShow";
 			this.menuShow.Size = new System.Drawing.Size(49, 22);
@@ -99,7 +101,7 @@
 			// 
 			this.menuShowSpatialLearning.CheckOnClick = true;
 			this.menuShowSpatialLearning.Name = "menuShowSpatialLearning";
-			this.menuShowSpatialLearning.Size = new System.Drawing.Size(198, 22);
+			this.menuShowSpatialLearning.Size = new System.Drawing.Size(251, 22);
 			this.menuShowSpatialLearning.Text = "Spatial Learning";
 			this.menuShowSpatialLearning.Click += new System.EventHandler(this.menuShowSpatialLearning_Click);
 			// 
@@ -107,7 +109,7 @@
 			// 
 			this.menuShowTemporalLearning.CheckOnClick = true;
 			this.menuShowTemporalLearning.Name = "menuShowTemporalLearning";
-			this.menuShowTemporalLearning.Size = new System.Drawing.Size(198, 22);
+			this.menuShowTemporalLearning.Size = new System.Drawing.Size(251, 22);
 			this.menuShowTemporalLearning.Text = "Temporal Learning";
 			this.menuShowTemporalLearning.Click += new System.EventHandler(this.menuShowTemporalLearning_Click);
 			// 
@@ -115,7 +117,7 @@
 			// 
 			this.menuShowCoordinateSystem.CheckOnClick = true;
 			this.menuShowCoordinateSystem.Name = "menuShowCoordinateSystem";
-			this.menuShowCoordinateSystem.Size = new System.Drawing.Size(198, 22);
+			this.menuShowCoordinateSystem.Size = new System.Drawing.Size(251, 22);
 			this.menuShowCoordinateSystem.Text = "Coordinate System";
 			this.menuShowCoordinateSystem.Click += new System.EventHandler(this.menuShowCoordinateSystem_Click);
 			// 
@@ -123,7 +125,7 @@
 			// 
 			this.menuActiveColumnGrid.CheckOnClick = true;
 			this.menuActiveColumnGrid.Name = "menuActiveColumnGrid";
-			this.menuActiveColumnGrid.Size = new System.Drawing.Size(198, 22);
+			this.menuActiveColumnGrid.Size = new System.Drawing.Size(251, 22);
 			this.menuActiveColumnGrid.Text = "Active Column Grid";
 			this.menuActiveColumnGrid.Click += new System.EventHandler(this.menuActiveColumnGrid_Click);
 			// 
@@ -131,9 +133,16 @@
 			// 
 			this.menuShowPredictedGrid.CheckOnClick = true;
 			this.menuShowPredictedGrid.Name = "menuShowPredictedGrid";
-			this.menuShowPredictedGrid.Size = new System.Drawing.Size(198, 22);
+			this.menuShowPredictedGrid.Size = new System.Drawing.Size(251, 22);
 			this.menuShowPredictedGrid.Text = "Region Predictions Grid";
 			this.menuShowPredictedGrid.Click += new System.EventHandler(this.menuShowPredictedGrid_Click);
+			// 
+			// regionPredictionReconstructionToolStripMenuItem
+			// 
+			this.regionPredictionReconstructionToolStripMenuItem.Name = "regionPredictionReconstructionToolStripMenuItem";
+			this.regionPredictionReconstructionToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+			this.regionPredictionReconstructionToolStripMenuItem.Text = "Region Prediction Reconstruction";
+			this.regionPredictionReconstructionToolStripMenuItem.Click += new System.EventHandler(this.regionPredictionReconstruction_Click);
 			// 
 			// showCorrectButton
 			// 
@@ -147,10 +156,10 @@
 			// 
 			// showSeqPredictingButton
 			// 
-			this.showSeqPredictingButton.BackColor = System.Drawing.Color.Magenta;
+			this.showSeqPredictingButton.BackColor = System.Drawing.Color.Aqua;
 			this.showSeqPredictingButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.showSeqPredictingButton.Image = ((System.Drawing.Image)(resources.GetObject("showSeqPredictingButton.Image")));
-			this.showSeqPredictingButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.showSeqPredictingButton.ImageTransparentColor = System.Drawing.Color.Aqua;
 			this.showSeqPredictingButton.Name = "showSeqPredictingButton";
 			this.showSeqPredictingButton.Size = new System.Drawing.Size(23, 22);
 			this.showSeqPredictingButton.Click += new System.EventHandler(this.showSeqPredictingButton_Click);
@@ -249,6 +258,7 @@
 		private System.Windows.Forms.ToolStripButton showCorrectButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton btnResetCamera;
+		private System.Windows.Forms.ToolStripMenuItem regionPredictionReconstructionToolStripMenuItem;
     }
 }
 

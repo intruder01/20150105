@@ -24,6 +24,7 @@ namespace OpenHTM.IDE
 
 		public bool ShowActiveColumnGrid { get; private set; }
 		public bool ShowPredictedGrid { get; private set; }
+		public bool ShowPredictionReconstructiondGrid { get; private set; }
 		public bool ShowTemporalLearning { get; private set; }
 		public bool ShowSpatialLearning { get; private set; }
 		public bool ShowCoordinateSystem { get; private set; }
@@ -208,6 +209,15 @@ namespace OpenHTM.IDE
 		private void menuShowPredictedGrid_Click(object sender, EventArgs e)
 		{
 			this.ShowPredictedGrid = !this.ShowPredictedGrid;
+			if (this.ShowPredictedGrid)
+				this.ShowPredictionReconstructiondGrid = false; //mutually exclusive since painted in the same corner
+		}
+
+		private void regionPredictionReconstruction_Click ( object sender, EventArgs e )
+		{
+			this.ShowPredictionReconstructiondGrid = !this.ShowPredictionReconstructiondGrid;
+			if (this.ShowPredictionReconstructiondGrid)
+				this.ShowPredictedGrid = false; //mutually exclusive since painted in the same corner
 		}
 
 		private void menuShowSpatialLearning_Click(object sender, EventArgs e)
