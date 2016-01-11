@@ -1497,7 +1497,7 @@ namespace OpenHTM.IDE
 				{
 					if (mapData[i, j] > 0)
 					{
-						activeCounter++;
+						activeCounter++; //this is arbitrary
 					}
 
 					float reconstructionStrength = mapData[i, j];
