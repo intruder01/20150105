@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="388f41ef-2ca5-4be3-ae5c-7b8725f5dec1" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="43ae97ec-8680-48fb-bb17-5212a5f21d7e" name="IDE">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="c8d52cd4-083e-46f9-b7e9-e04c42f1e494" direction="Forward">
+          <layerMoniker Id="1eab2ed6-9dd2-4488-a1ad-827049d0a319" />
+        </dependencyFromLayerToLayer>
+        <dependencyFromLayerToLayer Id="c8a4ca0d-99cb-4a20-adb6-cc69db93a597" direction="Forward">
+          <layerMoniker Id="9dce342b-a400-4e05-af34-c14a09c98e14" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+      <references>
+        <reference Id="9d5912b5-d0f5-49d5-bb14-3efe81e1481b" name="IDE">
+          <ArtifactNode Label="IDE" Category="CodeSchema_Project" Id="(Assembly=&quot;$(PersonalUri)/Projects/openHTM/AA WORK/OpenHTM/IDE/IDE.csproj&quot;)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=OpenHTM.IDE)" Label="OpenHTM.IDE.exe" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.exe" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="1eab2ed6-9dd2-4488-a1ad-827049d0a319" name="CLA">
+      <references>
+        <reference Id="9ff6d7f8-d228-4a61-bf1d-550b2bb33b73" name="CLA">
+          <ArtifactNode Label="CLA" Category="CodeSchema_Project" Id="(Assembly=&quot;$(PersonalUri)/Projects/openHTM/AA WORK/OpenHTM/CLA/CLA.csproj&quot;)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=OpenHTM.CLA)" Label="OpenHTM.CLA.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="9dce342b-a400-4e05-af34-c14a09c98e14" name="AdamsLair.WinForms">
+      <references>
+        <reference Id="f993c6b7-fbdc-4654-8042-dfbca4da7aaf" name="AdamsLair.WinForms">
+          <ArtifactNode Label="AdamsLair.WinForms" Category="CodeSchema_Project" Id="(Assembly=&quot;$(PersonalUri)/Projects/openHTM/AA WORK/OpenHTM/WinForms/AdamsLair.WinForms.csproj&quot;)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=AdamsLair.WinForms)" Label="AdamsLair.WinForms.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+    <layer Id="c8a94d05-ee42-42e3-8821-a5d804079c7d" name="Tools.InputProcessor">
+      <references>
+        <reference Id="bb6a5e17-7dbe-4c3c-898e-ec00722665c7" name="Tools.InputProcessor">
+          <ArtifactNode Label="Tools.InputProcessor" Category="CodeSchema_Project" Id="(Assembly=&quot;$(PersonalUri)/Projects/openHTM/AA WORK/OpenHTM/Tools.InputProcessor/Tools.InputProcessor.csproj&quot;)">
+            <Category Ref="File" />
+          </ArtifactNode>
+          <ExpandedNode Id="(Assembly=OpenHTM.Tools.InputProcessor)" Label="OpenHTM.Tools.InputProcessor.dll" Category="CodeSchema_Assembly">
+            <Category Ref="FileSystem.Category.FileOfType.dll" />
+            <LinkCategory Ref="Produces" />
+            <LinkCategory Ref="Represents" />
+          </ExpandedNode>
+        </reference>
+      </references>
+    </layer>
+  </layers>
+</layerModel>

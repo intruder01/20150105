@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerDiagram dslVersion="1.0.0.0" Id="3ac3f4bb-d587-4198-a118-f95e5bf69e1c" absoluteBounds="0, 0, 11, 8.5" name="LayerDiagram1">
+  <layerModelMoniker Id="388f41ef-2ca5-4be3-ae5c-7b8725f5dec1" />
+  <nestedChildShapes>
+    <layerShape Id="3f08ee32-48fc-4b5b-9fda-aa5a437f20a9" absoluteBounds="2.875, 1.25, 2, 0.75" customColor="161, 199, 231">
+      <layerMoniker Id="43ae97ec-8680-48fb-bb17-5212a5f21d7e" />
+    </layerShape>
+    <layerShape Id="18ef2d23-40f8-410e-8e89-0a971950d1a9" absoluteBounds="3, 3.625, 2, 0.75" customColor="161, 199, 231">
+      <layerMoniker Id="1eab2ed6-9dd2-4488-a1ad-827049d0a319" />
+    </layerShape>
+    <layerShape Id="e0033008-6596-4d4c-80eb-9240810cc325" absoluteBounds="6.375, 4, 2, 0.75" customColor="161, 199, 231">
+      <layerMoniker Id="9dce342b-a400-4e05-af34-c14a09c98e14" />
+    </layerShape>
+    <layerShape Id="7754beb0-b3d3-48dc-a730-3863a91b1249" absoluteBounds="5, 5.375, 2, 0.75" customColor="161, 199, 231">
+      <layerMoniker Id="c8a94d05-ee42-42e3-8821-a5d804079c7d" />
+    </layerShape>
+    <dependencyConnector edgePoints="[(3.9375 : 2); (3.9375 : 3.625)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="113, 111, 110">
+      <dependencyFromLayerToLayerMoniker Id="c8d52cd4-083e-46f9-b7e9-e04c42f1e494" />
+      <relativeChildShapes />
+      <nodes>
+        <layerShapeMoniker Id="3f08ee32-48fc-4b5b-9fda-aa5a437f20a9" />
+        <layerShapeMoniker Id="18ef2d23-40f8-410e-8e89-0a971950d1a9" />
+      </nodes>
+    </dependencyConnector>
+    <dependencyConnector edgePoints="[(4.875 : 2); (6.375 : 4)]" fixedFrom="NotFixed" fixedTo="NotFixed" customColor="113, 111, 110">
+      <dependencyFromLayerToLayerMoniker Id="c8a4ca0d-99cb-4a20-adb6-cc69db93a597" />
+      <relativeChildShapes />
+      <nodes>
+        <layerShapeMoniker Id="3f08ee32-48fc-4b5b-9fda-aa5a437f20a9" />
+        <layerShapeMoniker Id="e0033008-6596-4d4c-80eb-9240810cc325" />
+      </nodes>
+    </dependencyConnector>
+  </nestedChildShapes>
+</layerDiagram>
